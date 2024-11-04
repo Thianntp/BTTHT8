@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Tin Thanh Toán</title>
+    <link rel="stylesheet" href="../CSS/bootstrap.min.css">
+    <script src="../JS/jquery-3.7.1.min.js"></script>
+    <script src="../JS/bootstrap.min.js"></script>
+</head>
+<style>
+    .mauDo {
+        font-size: 100%;
+        color: red;
+    }
+    [class*="col-"] {
+        padding-right: 0%;
+        padding-left: 0%;
+    }
+    li {
+        width: 150px;
+    }
+</style>  
+<script>
+    $(document).ready(function(){
+        var i = 2;
+        $("#btnDK").click(function(){
+            $("#myModal").modal();
+        })
+        function kiemTraMa(){
+            var mauKT = /[0-9]{9}$/;
+            if(mauKT.test($("#txtMa").val())==""){
+            $("tbMa").html("Bat Buoc Nhap");
+            $("tbMa").addClass("mauDo");
+        } else {
+            $("tbMa").html("Nhap sai");
+            $("tbMa").addClass("mauDo");
+        }
+    }
+    function kiemtraMa() {
+            var mauKT = /^[0-9]{9}$/;
+            if ($("#txtMa").val() == "") {
+                $("#tbMa").html("Bắt buộc nhập");
+                $("#tbMa").addClass("mauDo");
+                return false;
+            } else if (!mauKT.test($("#txtMa").val())) {
+                $("#tbMa").html("Mã học viên phải là 9 chữ số");
+                $("#tbMa").addClass("mauDo");
+                return false;
+            } else {
+                $("#tbMa").html("*");
+                return true;
+            }
+        }
+        $("#txtMa").blur(kiemtraMa);
+
+        // Kiểm tra họ tên
+        function kiemtraHT() {
+            var kt = /^[A-Z][a-z]*(\s[A-Z][a-z]*)+$/;
+            if ($("#txtHT").val() == "") {
+                $("#tbTen").html("Bắt buộc nhập");
+                $("#tbTen").addClass("mauDo");
+                return false;
+            } else if (!kt.test($("#txtHT").val())) {
+                $("#tbTen").html("Chữ cái đầu phải viết hoa");
+                $("#tbTen").addClass("mauDo");
+                return false;
+            } else {
+                $("#tbTen").html("*");
+                return true;
+            }
+        }
+        $("#txtHT").blur(kiemtraHT);
+
+        // Kiểm tra địa chỉ
+        function kiemtraDC() {
+            if ($("#txtDC").val() == "") {
+                $("#tbDC").html("Bắt buộc nhập");
+                $("#tbDC").addClass("mauDo");
+                return false;
+            } else {
+                $("#tbDC").html("*");
+                return true;
+            }
+        }
+        $("#txtDC").blur(kiemtraDC);
+        $("#slGia").change(function() {
+            var gia = parseFloat($(this).val());
+            $("#txtDV").val(gia);
+            capnhatTong();
+        });
+
+
+        $(".chkDoDung").click(function() {
+            var tienDD = 0;
+            $(".chkDoDung:checked").each(function() {
+                tienDD += parseFloat($(this).val());
+            });
+            $("#txtDD").val(tienDD);
+            capnhatTong();
+        });
+
+        // Hàm tính tổng tiền
+        function capnhatTong() {
+            var dv = parseFloat($("#txtDV").val()) || 0;
+            var dd = parseFloat($("#txtDD").val()) || 0;
+            $("#txtTong").val(dv + dd);
+        }
+
+        // Lưu thông tin và thêm vào bảng
+        $("#btnSave").click(function() {
+            if (kiemtraMa() && kiemtraHT() && kiemtraDC()) {
+                var ma = $("#txtMa").val();
+                var ht = $("#txtHT").val();
+                var dc = $("#txtDC").val();
+                var tdv = $("#txtDV").val();
+                var tdd = $("#txtDD").val();
+                var tong = $("#txtTong").val();
+                var them = "<tr><td>" + (i++) + "</td><td>" + ma + "</td><td>" + ht + "</td><td>" + dc + "</td><td>" +
+                    tdv + "</td><td>" + tdd + "</td><td>" + tong + "</td></tr>";
+                $("#tbDanhSach").append(them);
+                $("#myModal").modal("hide");
+                return true;
+            }
+            return false;
+        });
+    });
+        
+</script>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <img src="../IMG/z5999168691343_d4c61c03d60a316cdc8ff2f4579d6ae4.jpg" alt="Banner" width="100%">
+            </div>
+        </div>
+        <div class="row">
+            <nav class="navbar">
+                <ul class="nav nav-navbar navbar-expand">
+                    <li class="nav-item"><a href="#" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link" id="btnDK">Đăng Kí</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Trợ Giúp</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="row">
+            <table class="table table-active">
+                <tr>
+                    <th>STT</th>
+                    <th>Mã Học Viên</th>
+                    <th>Họ Tên</th>
+                    <th>Tiền Dịch Vụ</th>
+                    <th>Tiền Đồ Dùng</th>
+                    <th>Tổng Tiền</th>
+                </tr>
+                <tbody id="tbDanhSach">
+                    <tr>
+                        <td>1</td>
+                        <td>123456789</td>
+                        <td>Trần Anh</td>
+                        <td>10000</td>
+                        <td>40000</td>
+                        <td>50000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Thông Tin Thanh Toán</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="txtMa">Mã Học Viên</label>
+                                <input type="text" id="txtMa" class="form-control">
+                                <span id="tbMa"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtHT">Họ Tên</label>
+                                <input type="text" id="txtHT" class="form-control">
+                                <span id="tbTen"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtDC">Địa Chỉ</label>
+                                <input type="text" id="txtDC" class="form-control">
+                                <span id="tbDC"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="slGia">Chọn Giá Dịch Vụ</label>
+                                <select id="slGia" class="form-control">
+                                    <option value="0">Chọn</option>
+                                    <option value="10000">Bơi</option>
+                                    <option value="20000">Phao</option>
+                                    <option value="30000">Kính bơi</i></option>
+                                </select>
+                                <input type="text" id="txtDV" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Chọn Đồ Dùng</label><br>
+                                <input type="checkbox" class="chkDoDung" value="10000"> Áo quần bơi
+                                <input type="checkbox" class="chkDoDung" value="20000"> Phao
+                                <input type="checkbox" class="chkDoDung" value="15000"> Kính bơi
+                                <input type="text" id="txtDD" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtTong">Tổng Tiền</label>
+                                <input type="text" id="txtTong" class="form-control" readonly>
+                            </div>
+                            <button type="button" id="btnSave" class="btn btn-primary">Lưu</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
